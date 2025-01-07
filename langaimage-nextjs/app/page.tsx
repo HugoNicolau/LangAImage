@@ -1,10 +1,13 @@
-"use client"; 
+"use client";
 
+import '../styles/globals.css';
 import axios from "axios";
 import { useState } from "react";
 import { TextExtractionResult } from "../types";
+import { useLanguage } from "./languageProvider";
 
 const App: React.FC = () => {
+  const { language } = useLanguage();
   const [file, setFile] = useState<File | null>(null);
   const [extractedText, setExtractedText] = useState<TextExtractionResult>({
     originalExtraction: '',
@@ -17,7 +20,6 @@ const App: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [translate, setTranslate] = useState<string>('no');
   const [targetLanguage, setTargetLanguage] = useState<string>('en');
-  const [language, setLanguage] = useState<string>('en');
   const [improveExtraction, setImproveExtraction] = useState<string>('no');
   const [summarizeText, setSummarizeText] = useState<string>('no');
 
@@ -43,9 +45,6 @@ const App: React.FC = () => {
     setTargetLanguage(event.target.value);
   };
 
-  const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setLanguage(event.target.value);
-  };
 
   const handleImproveExtractionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setImproveExtraction(event.target.value);
@@ -53,7 +52,7 @@ const App: React.FC = () => {
 
   const handleSummarizeTextChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSummarizeText(event.target.value);
-  }
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -122,75 +121,116 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="mb-4">
-        <label htmlFor="language" className="form-label">{language === 'en' ? 'Select the website Language' : 'Selecione o Idioma do site'}</label>
-        <select id="language" value={language} onChange={handleLanguageChange} className="form-control">
-          <option value="en">English</option>
-          <option value="pt">Português</option>
-        </select>
-      </div>
-      <h1 className="text-center mb-4">{language === 'en' ? 'Transform Your Image into Text' : 'Transforme Sua Imagem em Texto'}</h1>
-      <form onSubmit={handleSubmit} className="mb-4">
-        <div className="mb-3">
-          <input type="file" accept="image/*" onChange={handleFileChange} className="form-control" />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="translate" className="form-label">{language === 'en' ? 'Do you want to translate with AI?' : 'Você quer traduzir usando IA?'}</label>
-          <select id="translate" value={translate} onChange={handleTranslateChange} className="form-control">
-            <option value="no">{language === 'en' ? 'No' : 'Não'}</option>
-            <option value="yes">{language === 'en' ? 'Yes' : 'Sim'}</option>
-          </select>
-        </div>
-        {translate === 'yes' && (
+    <>
+      <div className="container mx-auto p-4">
+        <h1 className="text-center mb-4 text-2xl font-extrabold text-gray-700">
+          {language === 'en' ? 'Transform Your Image into Text' : 'Transforme Sua Imagem em Texto'}
+        </h1>
+        <form onSubmit={handleSubmit} className="mb-4">
           <div className="mb-3">
-            <label htmlFor="targetLanguage" className="form-label">{language === 'en' ? 'Select target language' : 'Selecione o idioma de destino'}</label>
-            <select id="targetLanguage" value={targetLanguage} onChange={handleTargetLanguageChange} className="form-control">
-              <option value="en">English</option>
-              <option value="pt">Português</option>
-              <option value="es">Español</option>
-              <option value="fr">Français</option>
-              <option value="it">Italiano</option>
-              <option value="de">Deutsch</option>
-              <option value="zh">中文</option>
-              <option value="ja">日本語</option>
+            <label htmlFor="file" className="block text-gray-700 text-sm font-bold mb-2">
+              {language === 'en' ? 'Select an image file' : 'Selecione um arquivo de imagem'}
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:border-secondary text-gray-700"
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="translate" className="block text-gray-700 text-sm font-bold mb-2">
+              {language === 'en' ? 'Do you want to translate with AI?' : 'Você quer traduzir usando IA?'}
+            </label>
+            <select
+              id="translate"
+              value={translate}
+              onChange={handleTranslateChange}
+              className="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:border-secondary text-gray-700"
+            >
+              <option value="no">{language === 'en' ? 'No' : 'Não'}</option>
+              <option value="yes">{language === 'en' ? 'Yes' : 'Sim'}</option>
             </select>
           </div>
-        )}
-        <div className="mb-3">
-          <label htmlFor="improveExtraction" className="form-label">{language === 'en' ? 'Do you want to improve the text extraction with AI?' : 'Você quer melhorar a extração do texto com IA?'}</label>
-          <select id="improveExtraction" value={improveExtraction} onChange={handleImproveExtractionChange} className="form-control">
-            <option value="no">{language === 'en' ? 'No' : 'Não'}</option>
-            <option value="yes">{language === 'en' ? 'Yes' : 'Sim'}</option>
-          </select>
-        </div>
-        <div className="mb-3">
-          <label htmlFor="summarizeText" className="form-label">{language === 'en' ? 'Do you want to summarize the text with AI?' : 'Você quer resumir o texto usando IA?'}</label>
-          <select id="summarizeText" value={summarizeText} onChange={handleSummarizeTextChange} className="form-control">
-            <option value="no">{language === 'en' ? 'No' : 'Não'}</option>
-            <option value="yes">{language === 'en' ? 'Yes' : 'Sim'}</option>
-          </select>
-        </div>
-        <button type="submit" className="btn btn-primary" disabled={isLoading}>
-          {isLoading ? (language === 'en' ? 'Extracting...' : 'Extraindo...') : (language === 'en' ? 'Extract text' : 'Extrair texto')}
-        </button>
-      </form>
-      {error && <div className="alert alert-danger">{error}</div>}
-      {getNonEmptyTexts().length > 0 && (
-        <div className="response-container mt-4">
-          {getNonEmptyTexts().map(item => (
-            <div key={item.key} className="text-block">
-              <h2>
-                {language === 'en'
-                  ? (item.key as string).replace(/([A-Z])/g, ' $1').trim()
-                  : translations[item.key]}
-              </h2>
-              <pre className="bg-light p-3">{item.content}</pre>
+          {translate === 'yes' && (
+            <div className="mb-3">
+              <label htmlFor="targetLanguage" className="block text-gray-700 text-sm font-bold mb-2">
+                {language === 'en' ? 'Select target language' : 'Selecione o idioma de destino'}
+              </label>
+              <select
+                id="targetLanguage"
+                value={targetLanguage}
+                onChange={handleTargetLanguageChange}
+                className="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:border-secondary text-gray-700"
+              >
+                <option value="en">English</option>
+                <option value="pt">Português</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="it">Italiano</option>
+                <option value="de">Deutsch</option>
+                <option value="zh">中文</option>
+                <option value="ja">日本語</option>
+              </select>
             </div>
-          ))}
-        </div>
-      )}
-    </div>
+          )}
+          <div className="mb-3">
+            <label htmlFor="improveExtraction" className="block text-gray-700 text-sm font-bold mb-2">
+              {language === 'en' ? 'Do you want to improve the text extraction with AI?' : 'Você quer melhorar a extração do texto com IA?'}
+            </label>
+            <select
+              id="improveExtraction"
+              value={improveExtraction}
+              onChange={handleImproveExtractionChange}
+              className="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:border-secondary text-gray-700"
+            >
+              <option value="no">{language === 'en' ? 'No' : 'Não'}</option>
+              <option value="yes">{language === 'en' ? 'Yes' : 'Sim'}</option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="summarizeText" className="block text-gray-700 text-sm font-bold mb-2">
+              {language === 'en' ? 'Do you want to summarize the text with AI?' : 'Você quer resumir o texto usando IA?'}
+            </label>
+            <select
+              id="summarizeText"
+              value={summarizeText}
+              onChange={handleSummarizeTextChange}
+              className="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:border-secondary text-gray-700"
+            >
+              <option value="no">{language === 'en' ? 'No' : 'Não'}</option>
+              <option value="yes">{language === 'en' ? 'Yes' : 'Sim'}</option>
+            </select>
+          </div>
+          <button
+            type="submit"
+            className={`w-full py-2 px-4 rounded-md text-white font-semibold ${isLoading ? 'bg-gray-400' : 'bg-secondary'}`}
+            disabled={isLoading}
+          >
+            {isLoading ? (language === 'en' ? 'Extracting...' : 'Extraindo...') : (language === 'en' ? 'Extract text' : 'Extrair texto')}
+          </button>
+        </form>
+        {error && (
+          <div className="p-4 mb-4 bg-red-100 rounded-lg text-red-700">
+            {error}
+          </div>
+        )}
+        {getNonEmptyTexts().length > 0 && (
+          <div className="mt-4">
+            {getNonEmptyTexts().map(item => (
+              <div key={item.key} className="mb-4">
+                <h2 className="text-xl font-bold mb-2">
+                  {language === 'en'
+                    ? (item.key as string).replace(/([A-Z])/g, ' $1').trim()
+                    : translations[item.key]}
+                </h2>
+                <pre className="p-4 bg-gray-100 rounded-lg">{item.content}</pre>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

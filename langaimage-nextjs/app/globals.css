@@ -7,6 +7,27 @@
   --foreground: #171717;
 }
 
+@font-face {
+  font-family: 'Rounded Elegance';
+  src: url('/fonts/RoundedElegance.ttf') format('truetype');
+  font-weight: normal;
+  font-size: normal;
+}
+
+@font-face {
+  font-family: 'Rounded MPLUS';
+  src: url('/fonts/MPLUSRounded1c-Black.ttf') format('truetype');
+  font-weight: normal;
+  font-size: normal;
+}
+
+@font-face {
+  font-family: 'Rounded MPLUS';
+  src: url('/fonts/MPLUSRounded1c-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-size: normal;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
