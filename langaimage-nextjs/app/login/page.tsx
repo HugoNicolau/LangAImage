@@ -1,48 +1,59 @@
-"use client"; // Mark this as a client component
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useLanguage } from "@/app/languageProvider";
 import axios from "axios";
+import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/app/languageProvider";
 
 export default function LoginPage() {
   const { language } = useLanguage();
   const router = useRouter();
+  const { setIsAuth } = useAuth(); // Use the global auth state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email || !password) {
-      setError(language === "en" ? "Please fill in all fields." : "Por favor, preencha todos os campos.");
+      setError(
+        language === "en"
+          ? "Please fill in all fields."
+          : "Por favor, preencha todos os campos.",
+      );
       return;
     }
 
     setIsLoading(true);
-    setError(""); 
+    setError("");
 
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/user/signin`,
+        { email, password },
         {
-          email,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true, // Include cookies in the request
         },
       );
 
-      if (response.status === 200) {
-        router.push("/");
+      if (response.status === 200 || response.status === 201) {
+        // Update global auth state first
+        setIsAuth(true);
+
+        // Wait a bit for the auth state to update
+        setTimeout(() => {
+          router.push("/");
+        }, 100);
       } else {
-        setError(language === "en" ? "Invalid email or password." : "E-mail ou senha inválidos.");
+        setError(
+          language === "en"
+            ? "Invalid email or password."
+            : "E-mail ou senha inválidos.",
+        );
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -59,12 +70,15 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h1 className="text-2xl font-bold mb-6 text-center">
+        <h1 className="text-2xl font-bold mb-6 text-center text-gray-700">
           {language === "en" ? "Login" : "Entrar"}
         </h1>
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               {language === "en" ? "Email" : "E-mail"}
             </label>
             <input
@@ -72,12 +86,15 @@ export default function LoginPage() {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-secondary"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-secondary text-gray-700"
               required
             />
           </div>
           <div className="mb-6">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               {language === "en" ? "Password" : "Senha"}
             </label>
             <input
@@ -85,7 +102,7 @@ export default function LoginPage() {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-secondary"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-secondary text-gray-700"
               required
               minLength={6}
             />
@@ -125,12 +142,6 @@ export default function LoginPage() {
             )}
           </button>
         </form>
-        <p className="mt-4 text-center text-sm text-gray-600">
-          {language === "en" ? "Don't have an account? " : "Não tem uma conta? "}
-          <Link href="/signup" className="text-secondary hover:underline">
-            {language === "en" ? "Sign up" : "Cadastre-se"}
-          </Link>
-        </p>
       </div>
     </div>
   );

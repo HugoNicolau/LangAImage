@@ -3,39 +3,87 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "../app/languageProvider";
+import { useAuth } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const Header = () => {
     const { language, handleLanguageChange } = useLanguage();
+    const { isAuth, setIsAuth } = useAuth(); // Use the global auth state
+    const router = useRouter();
+
+    // Handle logout
+    const handleLogout = async () => {
+        try {
+            await axios.post(
+                `${process.env.NEXT_PUBLIC_API_URL}/user/logout`,
+                {},
+                {
+                    withCredentials: true,
+                },
+            );
+            setIsAuth(false);
+            router.push('/login');
+        } catch (error) {
+            console.error('Logout error:', error);
+            alert('Failed to log out. Please try again.');
+        }
+    };
 
     return (
         <header className="bg-white shadow-md">
             <div className="container mx-auto flex items-center justify-between p-4">
                 <div className="flex items-center">
                     <Link href="/">
-                        <Image
-                            src="/logo.svg"
-                            alt="Logo"
-                            width={120}
-                            height={40}
-                            className="h-10 w-auto"
-                        />
-                        <h1 className="font-rounded-elegance text-secondary text-2xl ml-2">
-                            LangAImage
-                        </h1>
+                        {/* Logo and App Name */}
+                        <div className="flex items-center">
+                            <Image
+                                src="/logo.svg"
+                                alt="Logo"
+                                width={120}
+                                height={40}
+                                className="h-10 w-auto"
+                            />
+                            <h1 className="font-rounded-elegance text-secondary text-2xl ml-2">
+                                LangAImage
+                            </h1>
+                        </div>
                     </Link>
                 </div>
 
                 <div className="flex items-center space-x-6">
                     <nav className="flex space-x-6">
-                        <Link href="/contact" className="text-gray-700 hover:text-secondary font-medium">
+                        <Link
+                            href="/contact"
+                            className="text-gray-700 hover:text-secondary font-medium"
+                        >
                             {language === "en" ? "Contact" : "Contato"}
                         </Link>
-                        <Link href="/login" className="text-gray-700 hover:text-secondary font-medium">
-                            {language === "en" ? "Login" : "Entrar"}
-                        </Link>
-                        <Link href="/signup" className="text-gray-700 hover:text-secondary font-medium">
-                            {language === "en" ? "Sign Up" : "Cadastre-se"}
-                        </Link>
+
+                        {/* Conditionally render Login/Sign Up or Logout */}
+                        {!isAuth ? (
+                            <>
+                                <Link
+                                    href="/login"
+                                    className="text-gray-700 hover:text-secondary font-medium"
+                                >
+                                    {language === "en" ? "Login" : "Entrar"}
+                                </Link>
+                                <Link
+                                    href="/signup"
+                                    className="text-gray-700 hover:text-secondary font-medium"
+                                >
+                                    {language === "en" ? "Sign Up" : "Cadastre-se"}
+                                </Link>
+                            </>
+                        ) : (
+                            <button
+                                onClick={handleLogout}
+                                className="text-gray-700 hover:text-secondary font-medium"
+                            >
+                                {language === "en" ? "Logout" : "Sair"}
+                            </button>
+                        )}
                     </nav>
 
                     <div className="ml-4">

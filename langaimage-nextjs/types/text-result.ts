@@ -3,6 +3,5 @@ export type TextExtractionResult = {
     improvedExtraction: string;
     translatedText: string;
     summarizedText: string;
-    finalText: string;
   };
   

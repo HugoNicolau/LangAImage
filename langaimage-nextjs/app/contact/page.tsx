@@ -6,13 +6,13 @@ export default function ContactPage() {
   const { language } = useLanguage(); 
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+    <div className="min-h-screen bg-secondary rounded-lg flex items-center justify-center text-gray-700">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full">
         <h1 className="text-3xl font-bold text-center mb-8">
           {language === "en" ? "Contact Me" : "Entre em Contato"}
         </h1>
         <div className="space-y-6">
-          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-200 transition-colors">
             <FaLinkedin className="text-4xl text-[#0077B5]" />
             <div>
               <h2 className="text-xl font-semibold">LinkedIn</h2>
@@ -27,7 +27,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-200 transition-colors">
             <FaGithub className="text-4xl text-gray-800" />
             <div>
               <h2 className="text-xl font-semibold">GitHub</h2>
@@ -42,7 +42,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-200 transition-colors">
             <FaEnvelope className="text-4xl text-[#D14836]" />
             <div>
               <h2 className="text-xl font-semibold">Gmail</h2>
