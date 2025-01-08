@@ -1,17 +1,14 @@
-"use client"; // Mark this as a client component
+"use client";
 
 import { createContext, useState, useContext, ReactNode } from "react";
 
-// Define the context type
 interface LanguageContextType {
   language: string;
   handleLanguageChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
-// Create the context
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// Create a provider component
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<string>("en");
 
@@ -26,7 +23,6 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Custom hook to use the language context
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
   if (!context) {
