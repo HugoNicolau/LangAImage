@@ -42,9 +42,9 @@ const Header = () => {
                                 alt="Logo"
                                 width={120}
                                 height={40}
-                                className="h-10 w-auto"
+                                className="h-8 w-auto md:h-10" // Ajuste o tamanho do logo para telas pequenas
                             />
-                            <h1 className="font-rounded-elegance text-secondary text-2xl ml-2">
+                            <h1 className="font-rounded-elegance text-secondary text-xl ml-2 md:text-2xl">
                                 LangAImage
                             </h1>
                         </div>
@@ -67,13 +67,13 @@ const Header = () => {
                                     href="/login"
                                     className="text-gray-700 hover:text-secondary font-medium"
                                 >
-                                    {language === "en" ? "Login" : "Entrar"}
+                                    {language === "en" ? "Sign in" : "Entrar"}
                                 </Link>
                                 <Link
                                     href="/signup"
                                     className="text-gray-700 hover:text-secondary font-medium"
                                 >
-                                    {language === "en" ? "Sign Up" : "Cadastre-se"}
+                                    {language === "en" ? "Sign up" : "Cadastre-se"}
                                 </Link>
                             </>
                         ) : (
