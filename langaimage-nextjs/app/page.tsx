@@ -86,15 +86,15 @@ const App: React.FC = () => {
     }
 
     try {
-      const token = localStorage.getItem('authToken');
       const response = await axios.post(
+        
         `${process.env.NEXT_PUBLIC_API_URL}/ocr/extract`,
         formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${token}`,
           },
+          withCredentials: true,
         },
       );
       setExtractedText(response.data as TextExtractionResult);
