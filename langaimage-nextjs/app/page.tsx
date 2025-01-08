@@ -113,7 +113,7 @@ const App: React.FC = () => {
 
   const getNonEmptyTexts = (): TextItem[] => {
     return Object.entries(extractedText)
-      .filter(([_, value]) => value !== '')
+      .filter(([, value]) => value !== '')
       .map(([key, content]) => ({ key: key as keyof TextExtractionResult, content }));
   };
 

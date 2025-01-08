@@ -71,10 +71,10 @@ export default function SignupPage() {
             : "Ocorreu um erro durante o cadastro. Por favor, tente novamente.",
         );
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Signup error:", error);
 
-      if (error.response && error.response.data.message) {
+      if (axios.isAxiosError(error) && error.response && error.response.data.message) {
         // Handle specific backend errors (e.g., duplicate email or username)
         setError(error.response.data.message);
       } else {

@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setIsAuth(response.data.isValid);
       } catch (error) {
         setIsAuth(false);
+        console.log(error);
         // Don't redirect here, let the middleware handle it
       }
     };
