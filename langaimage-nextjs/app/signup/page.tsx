@@ -1,22 +1,29 @@
-"use client"; // Mark this as a client component
+"use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLanguage } from "@/app/languageProvider";
-import axios from "axios";
-import { useAuth } from "@/context/AuthContext";
+import api from '../../utils/api';
+import { parseCookies, setCookie } from 'nookies';
+import axios from 'axios';
 
 export default function SignupPage() {
-  const { language } = useLanguage(); // Access the language state
-  const router = useRouter(); // For navigation
-  const { setIsAuth } = useAuth(); // Use the global auth state
-  const [username, setUsername] = useState(""); // Username input state
-  const [email, setEmail] = useState(""); // Email input state
-  const [password, setPassword] = useState(""); // Password input state
-  const [confirmPassword, setConfirmPassword] = useState(""); // Confirm password input state
-  const [error, setError] = useState(""); // Error message state
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const { language } = useLanguage();
+  const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const cookies = parseCookies();
+    if (cookies.authToken) {
+      router.push('/');
+    }
+  }, [router]);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,8 +50,7 @@ export default function SignupPage() {
     setError("");
 
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/user/signup`,
+      const response = await api.post('/auth/signup',
         {
           username,
           email,
@@ -54,16 +60,23 @@ export default function SignupPage() {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true, // Include cookies in the request
+          withCredentials: true,
         },
       );
 
       if (response.status === 201) {
-        // Update global auth state
-        setIsAuth(true);
+        // Set the authentication cookie
+        setCookie(null, 'authToken', response.data.token, {
+          maxAge: 30 * 24 * 60 * 60, // 30 days
+          path: '/',
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict'
+        });
 
-        // Redirect to home
-        router.push("/");
+        // Wait a bit for the auth state to update
+        setTimeout(() => {
+          router.push("/");
+        }, 300);
       } else {
         setError(
           language === "en"
@@ -75,7 +88,6 @@ export default function SignupPage() {
       console.error("Signup error:", error);
 
       if (axios.isAxiosError(error) && error.response && error.response.data.message) {
-        // Handle specific backend errors (e.g., duplicate email or username)
         setError(error.response.data.message);
       } else {
         setError(
@@ -207,3 +219,4 @@ export default function SignupPage() {
     </div>
   );
 }
+

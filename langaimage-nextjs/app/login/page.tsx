@@ -1,19 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/app/languageProvider";
+import { parseCookies, setCookie } from 'nookies';
 
 export default function LoginPage() {
-  const { language } = useLanguage();
   const router = useRouter();
-  const { setIsAuth } = useAuth(); // Use the global auth state
+  const { language } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const cookies = parseCookies();
+    if (cookies.authToken) {
+      router.push('/');
+    }
+  }, [router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,22 +38,27 @@ export default function LoginPage() {
 
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/user/signin`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
         { email, password },
         {
           headers: { "Content-Type": "application/json" },
-          withCredentials: true, // Include cookies in the request
+          withCredentials: true,
         },
       );
 
       if (response.status === 200 || response.status === 201) {
-        // Update global auth state first
-        setIsAuth(true);
+        // Set the authentication cookie
+        setCookie(null, 'authToken', response.data.accessToken, {
+          maxAge: 30 * 24 * 60 * 60, // 30 days
+          path: '/',
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict'
+        });
 
         // Wait a bit for the auth state to update
         setTimeout(() => {
           router.push("/");
-        }, 100);
+        }, 300);
       } else {
         setError(
           language === "en"
@@ -146,3 +157,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

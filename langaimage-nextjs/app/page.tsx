@@ -5,6 +5,7 @@ import axios from "axios";
 import { useState } from "react";
 import { TextExtractionResult } from "../types";
 import { useLanguage } from "./languageProvider";
+import { parseCookies } from 'nookies';
 
 const App: React.FC = () => {
   const { language } = useLanguage();
@@ -71,9 +72,19 @@ const App: React.FC = () => {
     setIsLoading(true);
     setError('');
 
+    const cookies = parseCookies();
+    const authToken = cookies.authToken || cookies.token || '';
+
+    if (!authToken) {
+      console.error('No authentication token found');
+      setError(language === 'en' ? 'You are not authenticated. Please log in.' : 'Você não está autenticado. Por favor, faça login.');
+      setIsLoading(false);
+      return;
+    }
+
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('title', imageTitle); // Add image title to form data
+    formData.append('title', imageTitle);
 
     if (improveExtraction.toLowerCase() === 'yes') {
       formData.append('improveExtraction', improveExtraction);
@@ -86,25 +97,39 @@ const App: React.FC = () => {
     }
 
     try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'multipart/form-data',
+      };
+
+      if (authToken) {
+        headers['Authorization'] = `Bearer ${authToken}`;
+      }
+
       const response = await axios.post(
-        
         `${process.env.NEXT_PUBLIC_API_URL}/ocr/extract`,
         formData,
         {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+          headers,
           withCredentials: true,
         },
       );
       setExtractedText(response.data as TextExtractionResult);
     } catch (error) {
-      console.log(error);
-      setError(language === 'en' ? 'Failed to extract text. Please try again later.' : 'Falha ao extrair o texto. Por favor, tente novamente mais tarde.');
+      console.error("Error during text extraction:", error);
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response.status === 401) {
+          setError(language === 'en' ? 'You are not authorized. Please log in again.' : 'Você não está autorizado. Por favor, faça login novamente.');
+        } else {
+          setError(language === 'en' ? 'Failed to extract text. Please try again later.' : 'Falha ao extrair o texto. Por favor, tente novamente mais tarde.');
+        }
+      } else {
+        setError(language === 'en' ? 'An unexpected error occurred. Please try again.' : 'Ocorreu um erro inesperado. Por favor, tente novamente.');
+      }
     } finally {
       setIsLoading(false);
     }
   };
+
 
   interface TextItem {
     key: Extract<keyof TextExtractionResult, string>;
