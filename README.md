@@ -1,37 +1,24 @@
-# **LangAImage Frontend**
+# **LangAImage**
 
-**LangAImage Frontend** is the user interface for the LangAImage application, a platform that allows users to upload images, extract text using OCR, translate it into multiple languages, summarize content, and improve text quality. This frontend is built with **React**, **Vite**, and **TypeScript**, and styled using **Tailwind CSS** for a modern and responsive user experience.
+**LangAImage** is a Next.js application for image extraction and translation.
 
 ---
 
 ## **Features**
 
-1. **Image Upload:**
-   - Users can upload images to extract text using OCR.
-
-2. **Text Extraction:**
-   - Displays extracted text from the uploaded image.
-
-3. **Text Translation:**
-   - Translates extracted text into multiple languages using AI.
-
-4. **Text Summarization:**
-   - Summarizes long texts into concise and meaningful summaries.
-
-5. **Text Quality Improvement:**
-   - Enhances the quality of extracted text using AI.
-
-6. **Multi-Language Support:**
-   - Supports multiple languages for the user interface and text processing.
-
-7. **Responsive Design:**
-   - Works seamlessly on desktop, tablet, and mobile devices.
+- User authentication (login, signup, logout)
+- Image extraction using OCR
+- Text translation
+- Text summarization
+- Enhances the quality of extracted text using AI.
+- Supports multiple languages for the user interface and text processing.
+- Works seamlessly on desktop, tablet, and mobile devices.
 
 ---
 
 ## **Technologies Used**
 
-- **Frontend Framework:** React
+- **Frontend Framework:** Next.js
 - **Build Tool:** Vite
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
@@ -39,6 +26,8 @@
 - **Routing:** Next.js (or React Router, depending on your setup)
 - **Icons:** `react-icons`
 - **API Integration:** Axios for communicating with the backend.
+- **Backend Framework:** NestJS
+- **Authentication:** JWT
 
 ---
 
@@ -48,7 +37,7 @@
 
 Before running the frontend, ensure you have the following installed:
 
-- Node.js (v16 or higher)
+- Node.js (>= 14.x)
 - npm (v7 or higher) or yarn
 
 ---
@@ -57,8 +46,8 @@ Before running the frontend, ensure you have the following installed:
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/HugoNicolau/langaimage.git
-   cd langaimage-frontend
+   git clone https://github.com/yourusername/LangAImage.git
+   cd LangAImage
    ```
 
 2. **Install Dependencies:**
@@ -71,7 +60,7 @@ Before running the frontend, ensure you have the following installed:
 3. **Set Up Environment Variables:**
    - Create a `.env` file in the root directory and add the following:
      ```env
-     VITE_API_URL=http://localhost:5000 # Replace with your backend API URL
+     NEXT_PUBLIC_API_URL=http://localhost:3001 # Replace with your backend API URL
      ```
 
 4. **Run the Development Server:**
@@ -83,28 +72,6 @@ Before running the frontend, ensure you have the following installed:
 
 5. **Access the Application:**
    Open your browser and navigate to `http://localhost:3000`.
-
----
-
-## **Project Structure**
-
-```
-langaimage-frontend/
-├── public/               # Static assets (e.g., images, fonts)
-├── src/                  # Source code
-│   ├── components/       # Reusable components (e.g., Header, Footer)
-│   ├── pages/            # Application pages (e.g., Home, Contact, Login)
-│   ├── styles/           # Global styles and Tailwind configuration
-│   ├── types/            # TypeScript types and interfaces
-│   ├── utils/            # Utility functions (e.g., API calls)
-│   ├── App.tsx           # Main application component
-│   └── main.tsx          # Entry point
-├── .env.example          # Example environment variables
-├── tailwind.config.js    # Tailwind CSS configuration
-├── vite.config.ts        # Vite configuration
-├── package.json          # Project dependencies
-└── README.md             # Project documentation
-```
 
 ---
 
@@ -185,12 +152,12 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 For questions, feedback, or support, please contact:
 
 - **Hugo Nicolau**
-- **Email:** nicolau.hugogiles@example.com
+- **Email:** nicolau.hugogiles@gmail.com
 - **GitHub:** [Hugo Nicolau](https://github.com/HugoNicolau)
 - **LinkedIn:** [Hugo Nicolau](https://www.linkedin.com/in/hugo-nicolau)
 
 ---
 
-Thank you for using **LangAImage Frontend**! We hope it provides a seamless and enjoyable experience for your text processing needs. 🚀
+Thank you for using **LangAImage**! We hope it provides a seamless and enjoyable experience for your text processing needs. 🚀
 
 ---
